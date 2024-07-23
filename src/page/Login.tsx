@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { EnvelopeIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { useEffect, useState } from "react";
 import Input from "../components/Input";
-import { authAction } from "../redux/slice/authContext";
+import { authAction } from "../redux/slice/authSlice";
 import { useStoreDispatch, useStoreSelector } from '../redux/hook';
 
 export default function Login() {
@@ -37,7 +37,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (token) navigate("/");
+    if (token) navigate("/profile");
   }, [navigate, token]);
 
   const togglePasswordVisibility = () => {

@@ -8,16 +8,20 @@ import {
   MagnifyingGlassIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/16/solid";
-import { useStoreSelector } from "../../redux/hook";
-import { authAction } from "../../redux/slice/authContext";
-import { useDispatch } from "react-redux";
+import { useStoreDispatch, useStoreSelector } from "../../redux/hook";
+import { authAction } from "../../redux/slice/authSlice";
 
 export default function Header() {
+  const { checkout } = useStoreSelector((state) => state.checkout);
+  console.log('Checkout', checkout)
+
+  const cartItemCount = checkout.length;
+
   const { token } = useStoreSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch = useStoreDispatch();
   const Page = [
-    { name: "Home", link: "/" },
-    { name: "Product", link: "/product" },
+    { id: 1, name: "Home", link: "/" },
+    { id: 2, name: "Product", link: "/product" },
   ];
   const [isOpen, setisOpen] = useState(false);
 
@@ -39,13 +43,15 @@ export default function Header() {
         </div>
 
         {/* Navigation links */}
-        <nav className="text-sm flex gap-4 items-center list-none text-white">
-          {Page.map((link) => (
+        {Page.map((link) => (
+          <li
+            key={link.id}
+            className="text-sm flex gap-4 items-center list-none text-white">
             <Link className="hidden lg:block" to={link.link}>
               {link.name}
             </Link>
-          ))}
-        </nav>
+          </li>
+        ))}
       </div>
 
       {/* btn responsive */}
@@ -72,11 +78,13 @@ export default function Header() {
           } lg:hidden `}>
           {/* navigation links */}
           {Page.map((link) => (
-            <Link
-              className="text-sm flex gap-4 items-center list-none text-white"
-              to={link.link}>
-              {link.name}
-            </Link>
+            <li key={link.id}>
+              <Link
+                className="text-sm flex gap-4 items-center list-none text-white"
+                to={link.link}>
+                {link.name}
+              </Link>
+            </li>
           ))}
 
           {/* search icon */}
@@ -103,7 +111,7 @@ export default function Header() {
               </Link>
 
               {/* Sign Up */}
-              <Link to="/register">
+              <Link to="/profile">
                 <button className="navbar-nav sign-up rounded-lg px-6 py-2 bg-primary opacity-100 border-none text-sm">
                   Profile
                 </button>
@@ -138,16 +146,17 @@ export default function Header() {
           </Link>
 
           {/* shopping cart icon */}
-          <Link to="/">
+          <Link to="checkout" className="relative">
             <div className="w-5 h-5 text-white">
               <ShoppingCartIcon />
             </div>
+            {cartItemCount > 0 && <sup className="text-white absolute top-0 left-6 text-[0.7rem]">{cartItemCount}</sup>}
           </Link>
 
           {token ? (
             <div className="flex gap-4">
               {/* Sign In */}
-              <Link to="/login">
+              <Link to="/profile">
                 <button className="navbar-nav sign-in rounded-lg px-6 py-2 border border-white bg-transparent text-white text-sm">
                   Profile
                 </button>
@@ -156,8 +165,7 @@ export default function Header() {
               {/* Logout */}
               <button
                 onClick={() => {
-                  dispatch(authAction.logout()); // Dispatch logout action
-                  // Additional logout logic can go here
+                  dispatch(authAction.logout());
                 }}
                 className="navbar-nav logout rounded-lg px-6 py-2 border border-white bg-transparent text-white text-sm">
                 Logout

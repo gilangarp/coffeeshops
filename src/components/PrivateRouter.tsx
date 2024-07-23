@@ -1,5 +1,5 @@
 import { Navigate, To } from "react-router-dom";
-import { useStoreSelector } from "../redux/hook"
+import { useStoreSelector } from "../redux/hook";
 
 function PrivateRoute({ children, to }: { children: JSX.Element; to: To }) {
   const { token } = useStoreSelector((state) => state.auth);
